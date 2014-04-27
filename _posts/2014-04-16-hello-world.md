@@ -69,7 +69,7 @@ This time, suppose you want to read 1024 bytes at a time from a file:
 
 {% highlight python %}
 
-with open('foo/bar/qux') as f:
+with open('/foo/bar/qux') as f:
     block = f.read(1024)
     
     while block:
