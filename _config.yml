@@ -4,6 +4,7 @@ comments: true
 exclude: ["README.md"] # files to exclude
 excerpt_separator: <!--more-->
 highlighter: pygments
+markdown: kramdown
 paginate: 10 # pagination based on number of posts
 paginate_path: "page:num"
 pygments: true
