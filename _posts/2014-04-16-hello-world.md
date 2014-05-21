@@ -7,7 +7,7 @@ categories: []
 tags: []
 ---
 
-I have been willing to start a blog for a while... and this is finally happening! In fact, I am currently working on my first post about the internals of CPython string interning and I hope to publish it in a few days.
+I have been wanting to start a blog for a while... and it's finally happening! In fact, I'm currently working on my first post about CPython string interning and I hope to publish it in a few days.
 
 Meanwhile, I will leave you with two neat Python tricks I discovered last year in Raymond Hettinger's PyCon talk: ["Transforming Code into Beautiful, Idiomatic Python"](https://www.youtube.com/watch?v=OSGv2VnC0go).
 
@@ -26,7 +26,7 @@ except OSError:
     pass
 {% endhighlight %}
 
-Now, let's define the `ignored` context manager as follow:
+Now, let's define the `ignored` context manager as follows:
 
 {% highlight python %}
 from contextlib import contextmanager
@@ -39,7 +39,7 @@ def ignored(*exceptions):
         pass
 {% endhighlight %}
 
-Finally, you write:
+Finally, this allows you to write:
 
 {% highlight python %}
 import os
@@ -48,7 +48,7 @@ with ignored(OSError):
     os.makedirs('/foo/bar')
 {% endhighlight %}
 
-__Nota bene__: this example is probably not the best one, since you would better handle this exception this way:
+__Nota bene__: this is probably not the best example since you can handle this exception better by doing the following:
 
 {% highlight python %}
 import errno
