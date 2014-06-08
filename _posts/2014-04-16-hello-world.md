@@ -9,7 +9,7 @@ tags: []
 
 I have been wanting to start a blog for a while... and it's finally happening! In fact, I'm currently working on my first post about CPython string interning and I hope to publish it in a few days.
 
-Meanwhile, I will leave you with two neat Python tricks I discovered last year in Raymond Hettinger's PyCon talk: ["Transforming Code into Beautiful, Idiomatic Python"](https://www.youtube.com/watch?v=OSGv2VnC0go).
+Meanwhile, I will leave you with two neat Python tricks I discovered last year in Raymond Hettinger's PyCon talk: ["Transforming Code into Beautiful, Idiomatic Python"](https://www.youtube.com/watch?v=OSGv2VnC0go){:target="_blank"}.
 
 <!--more-->
 
