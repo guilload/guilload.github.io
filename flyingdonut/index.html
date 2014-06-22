@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script id="template" type="x-tmpl-mustache">
+        {{ #hits }}
+        <div class="row">
+          <ul>
+              <li class="hit-name">{{ name }}</li>
+              <li class="hit-photo"><img src="{{ photo }}" alt="{{ name }}"></li>
+              <li class="hit-address">{{ address }}</li>
+              <li class="hit-phone-number">{{ phoneNumber }}</li>
+              <li class="hit-rating">{{ rating }}</li>
+              <li class="hit-website">{{ website }}</li>
+            </ul>
+        </div>
+      {{ /hits }}
+    </script>
+    <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
+    <script type="text/javascript">
+      var autocompleteService, placesService;
+      var map;
+      var data = {hits: [], length: 0};
+
+      function initialize() {
+        // Autocomplete
+        var addressInput = document.getElementById('address');
+        autocomplete = new google.maps.places.Autocomplete(addressInput, {types: ['geocode']});
+
+        google.maps.event.addListener(autocomplete, 'place_changed', function() {
+          var place = autocomplete.getPlace();
+          nearbySearch(place.geometry.location.k, place.geometry.location.A);
+        });
+
+        // Map
+        map = new google.maps.Map(document.getElementById('map-canvas'), {
+            // center: pyrmont,
+            zoom: 15
+          });
+
+        // Places
+        placesService = new google.maps.places.PlacesService(map);
+      }
+
+      function nearbySearch(latitude, longitude) {
+        var location = new google.maps.LatLng(latitude, longitude);
+        var request = {
+          location: location,
+          openNow: $("#open").is(':checked'),
+          radius: $("#radius").val(),
+          types: ['restaurant'],
+        };
+
+        data.hits = [];
+        data.length = 0;
+        placesService.nearbySearch(request, nearbySearchCallback);
+      }
+
+      function nearbySearchCallback(results, status) {
+        console.log(status);
+
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          data.length = results.length;
+
+          for (var i = 0; i < results.length; i++) {
+            var func = function(i) {
+              return function() {
+                var request = {
+                  reference: results[i].reference
+                };
+                placesService.getDetails(request, getDetailsCallback);
+              };
+            };
+            setTimeout(func(i), Math.floor(i / 5) * 2000);
+          }
+        }
+      }
+
+      function getDetailsCallback(hit, status) {
+        console.log(status);
+
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          console.log(hit);
+
+          data.hits.push({
+            address: hit.address_components[0].long_name + ', ' + hit.address_components[1].long_name,
+            name: hit.name,
+            phoneNumber: hit.formatted_phone_number,
+            photo: hit.photos && hit.photos.length ? hit.photos[0].getUrl({'maxWidth': 336, 'maxHeight': 200}) : '',
+            rating: hit.rating,
+            website: hit.website
+          });
+
+          if (data.hits.length == data.length) {
+            filter();
+            rank();
+            render();
+          }
+        }
+      }
+
+      function filter() {
+        var threshold = parseFloat($('#threshold').val());
+        data.hits = _.filter(data.hits, function(hit){ return hit.rating >= threshold});
+        console.log(data.length - data.hits.length + '/' + data.length + ' hit(s) were filtered out');
+      }
+
+      function rank() {
+        data.hits = _.sortBy(data.hits, function(hit){ return -hit.rating});
+      }
+
+      function render() {
+        var template = $('#template').html();
+
+        Mustache.parse(template); // optional, speeds up future uses
+        var rendered = Mustache.render(template, data);
+        $('#hits').html(rendered);
+      }
+
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button> -->
+          <a class="navbar-brand" href="#">Flying donut</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <!-- <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div id="map-canvas">
+      </div>
+      <div class="row">
+        <div class="jumbotron">
+          <form class="form-inline" id="nearby-search" role="form">
+
+            <div class="form-group">
+              <label for="address">Address: </label>
+              <input class="form-control" type="text" name="address" id="address" size="50">
+            </div>
+
+            <div class="form-group">
+              <label for="radius">Radius: </label>
+              <input class="form-control input-xs" type="text" name="radius" id="radius" size="5" value="500">
+            </div>
+
+            <div class="form-group">
+              <label for="threshold">Rating threshold: </label>
+              <input class="form-control input-xs" type="text" name="threshold" id="threshold" size="5" value="4">
+            </div>
+
+            <div class="form-group">
+              <label>Open right now? <input type="checkbox" checked></label>
+            </div>
+            <!-- <button type="submit" class="btn btn-primary">Let's eat!</button> -->
+          </form>  
+        </div>
+      </div>
+      
+      <div id="hits">
+      </div>
+    </div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  </body>
+</html>
