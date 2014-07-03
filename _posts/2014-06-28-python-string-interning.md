@@ -415,3 +415,8 @@ False
 {% endhighlight %}
 
 ;)
+
+#### Going deeper
+
+* [Exploring Python Code Objects](http://late.am/post/2012/03/26/exploring-python-code-objects){:target="_blank"}, Dan Crosta;
+* [Python string objects implementation](http://www.laurentluce.com/posts/python-string-objects-implementation/){:target="_blank"}, Laurent Luce.
