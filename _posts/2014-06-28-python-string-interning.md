@@ -205,7 +205,7 @@ True
 
 #### Interned or not interned?
 
-Before writing this blog post, I always thought that, under the hood, strings were natively interned according to a rule taking into account their length and the characters composing them. I was not far way from the truth. but unfortunately, when playing with pairs of strings built in very different ways, I could never infer what this rule exactly was. Can you?
+Before writing this blog post, I always thought that, under the hood, strings were natively interned according to a rule taking into account their length and the characters composing them.  I was not far away from the truth but, unfortunately, when playing with pairs of strings built in very different ways, I could never infer what this rule exactly was. Can you?
 
 {% highlight python %}
 >>> 'foo' is 'foo'
@@ -230,7 +230,7 @@ After looking at these examples, you have to admit that it is hard to tell on wh
 
 #### Fact 1: all length 0 and length 1 strings are interned
 
-Still in stringobject.c, we will take a look this time at these very interesting lines placed both in the functions `PyString_FromStringAndSize` and `PyString_FromString`:
+Still in stringobject.c, this time we will take a look at these interesting lines placed in both of the following functions `PyString_FromStringAndSize` and `PyString_FromString`:
 
 {% highlight C %}
 /* share short strings */
@@ -264,7 +264,7 @@ The Python code you write is not directly interpreted and goes through a classic
               8 RETURN_VALUE
 {% endhighlight %}
 
-As you know, in Python everything is an object and Code objects are Python objects which represent pieces of bytecode. A Code object carries along with all the information needed to execute: constants, variable names and so on. It turns out that when building a Code object in CPython, some more strings are interned:
+As you know, in Python everything is an object and Code objects are Python objects which represent pieces of bytecode. A Code object carries along with all the information needed to execute: constants, variable names, and so on. It turns out that when building a Code object in CPython, some more strings are interned:
 
 {% highlight C %}
 PyCodeObject *
@@ -287,7 +287,7 @@ PyCode_New(int argcount, int nlocals, int stacksize, int flags,
 {% endhighlight %}
 
 
-In [codeobject.c](http://hg.python.org/releasing/2.7.7/file/4b38a5a36536/Objects/codeobject.c#l71){:target="_blank"}, the tuple `consts` contains the literals defined at compile time: booleans, floating-point numbers, integers and strings declared in your program. The strings stored in this tuple and not filtered out by the `all_name_chars` function are interned.
+In [codeobject.c](http://hg.python.org/releasing/2.7.7/file/4b38a5a36536/Objects/codeobject.c#l71){:target="_blank"}, the tuple `consts` contains the literals defined at compile time: booleans, floating-point numbers, integers, and strings declared in your program. The strings stored in this tuple and not filtered out by the `all_name_chars` function are interned.
 
 In the example below, `s1` is declared at compile time. Oppositely, `s2` is produced at runtime: 
 
@@ -341,7 +341,7 @@ True
 
 This is why the result of `'foo' + 'bar'` is also interned and the expression evaluates to `True`.
 
-How? The penultimate source code compilation step produces a first version of bytecode. This "raw" bytecode goes finally into a last compilation step called "peephole optimization".
+How? The penultimate source code compilation step produces a first version of bytecode. This "raw" bytecode finally goes into a last compilation step called "peephole optimization".
 
 <img alt="Compilation chain" src="/assets/media/python-string-interning/baz.png">
 
@@ -386,19 +386,19 @@ We discovered why the following expression evaluates to True:
 
 #### Avoiding large *.pyc* files
 
-So why `'a' * 21 is 'aaaaaaaaaaaaaaaaaaaaa'` does not evaluate to `True`? Do you remember the *.pyc* files you encounter in all your packages? In fact, Python bytecode is stored in these files. What would happen if someone wrote something like this `['foo!'] * 10**9`? The resulting *.pyc* file would be huge! In order to avoid this phenomena, sequences generated through peephole optimization are discarded if their length is superior to 20.
+So why does `'a' * 21 is 'aaaaaaaaaaaaaaaaaaaaa'` not evaluate to `True`? Do you remember the *.pyc* files you encounter in all your packages? Well, Python bytecode is stored in these files. What would happen if someone wrote something like this `['foo!'] * 10**9`? The resulting *.pyc* file would be huge! In order to avoid this phenomena, sequences generated through peephole optimization are discarded if their length is superior to 20.
 
 #### I know interning
 
 Now, you know all about Python string interning!
 
-I’m amazed by how deep in CPython something so anecdotic like string interning got me through. I’m also surprised by the simplicity of the CPython API. Even though, I’m a poor C developer, the code is very readable, very well documented and I feel like even I could contribute.
+I’m amazed at how deep I dug in CPython in order to understand something as anecdotic as string interning. I’m also surprised by the simplicity of the CPython API. Even though, I’m a poor C developer, the code is very readable, very well documented, and I feel like even I could contribute to it.
 
 #### Immutability required
 
 Oh... one last thing, I forgot to mention one **VERY** important thing. Interning works because Python strings are immutable. Interning mutable objects would not make sense at all and would cause disastrous side effects.
 
-But wait... We know some other immutables objects. Integers for instance. Well... guess what?
+But wait... We know some other immutable objects. Integers for instance. Well... guess what?
 
 {% highlight python %}
 >>> x, y = 256, 256
