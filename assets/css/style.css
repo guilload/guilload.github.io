@@ -127,6 +127,10 @@ footer {
 
 .badge { background: #901c1d; }
 
+.tweet-button {
+    float: right;
+}
+
 #nav-menu{
     position: fixed;
     top: 45px;
