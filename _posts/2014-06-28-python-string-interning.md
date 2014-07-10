@@ -361,7 +361,7 @@ This is exactly what happens to the `'foo' + 'bar'` expression. Let’s define t
 {% highlight python %}
 >>> import dis
 >>> def foobar():
-...         return ‘foo’ + ‘bar’
+...         return 'foo' + 'bar'
 >>> dis.dis(foobar)
   2           0 LOAD_CONST               3 ('foobar')
               3 RETURN_VALUE     
