@@ -30,7 +30,7 @@ You got the idea but… how does it work internally?
 
 #### The `PyStringObject` structure
 
-Let’s delve into CPython source code and take a look at `PyStringObject`, the C structure representing Python strings located in the file [stringobject.h](http://hg.python.org/releasing/2.7.7/file/4b38a5a36536/Include/stringobject.h#l35){:target="_blank"}:
+Let’s delve into CPython source code and take a look at `PyStringObject`, the C structure representing Python strings located in the file [stringobject.h](https://hg.python.org/releasing/2.7.9/file/753a8f457ddc/Include/stringobject.h#l35){:target="_blank"}:
 
 {% highlight C %}
 typedef struct {
@@ -50,7 +50,7 @@ typedef struct {
 } PyStringObject;
 {% endhighlight %}
 
-According to this comment, the variable `ob_sstate` is different from 0 if and only if the string is interned. This variable is never accessed directly but always through the macro `PyString_CHECK_INTERNED` defined a [few lines below](http://hg.python.org/releasing/2.7.7/file/4b38a5a36536/Include/stringobject.h#l88){:target="_blank"}:
+According to this comment, the variable `ob_sstate` is different from 0 if and only if the string is interned. This variable is never accessed directly but always through the macro `PyString_CHECK_INTERNED` defined a [few lines below](https://hg.python.org/releasing/2.7.9/file/753a8f457ddc/Include/stringobject.h#l88){:target="_blank"}:
 
 {% highlight C %}
 #define PyString_CHECK_INTERNED(op) (((PyStringObject *)(op))->ob_sstate)
@@ -58,19 +58,19 @@ According to this comment, the variable `ob_sstate` is different from 0 if and o
 
 #### The `interned` dictionary
 
-Then, let’s open [stringobject.c](http://hg.python.org/releasing/2.7.7/file/4b38a5a36536/Objects/stringobject.c#l24){:target="_blank"}. Line 24 declares a reference to an object where interned strings will be stored:
+Then, let’s open [stringobject.c](https://hg.python.org/releasing/2.7.9/file/753a8f457ddc/Objects/stringobject.c#l24){:target="_blank"}. Line 24 declares a reference to an object where interned strings will be stored:
 
 {% highlight C %}
 static PyObject *interned;
 {% endhighlight %}
 
-In fact, this object is a regular Python dictionary and is initialized [line 4744](http://hg.python.org/releasing/2.7.7/file/4b38a5a36536/Objects/stringobject.c#l4744){:target="_blank"}:
+In fact, this object is a regular Python dictionary and is initialized [line 4745](https://hg.python.org/releasing/2.7.9/file/753a8f457ddc/Objects/stringobject.c#l4745){:target="_blank"}:
 
 {% highlight C %}
 interned = PyDict_New();
 {% endhighlight %}
 
-Finally, all the magic happens [line 4730](http://hg.python.org/releasing/2.7.7/file/4b38a5a36536/Objects/stringobject.c#l4730){:target="_blank"} in the `PyString_InternInPlace` function. The implementation is straightforward:
+Finally, all the magic happens [line 4732](https://hg.python.org/releasing/2.7.9/file/753a8f457ddc/Objects/stringobject.c#l4732){:target="_blank"} in the `PyString_InternInPlace` function. The implementation is straightforward:
 
 {% highlight C %}
 PyString_InternInPlace(PyObject **p)
@@ -287,7 +287,7 @@ PyCode_New(int argcount, int nlocals, int stacksize, int flags,
 {% endhighlight %}
 
 
-In [codeobject.c](http://hg.python.org/releasing/2.7.7/file/4b38a5a36536/Objects/codeobject.c#l71){:target="_blank"}, the tuple `consts` contains the literals defined at compile time: booleans, floating-point numbers, integers, and strings declared in your program. The strings stored in this tuple and not filtered out by the `all_name_chars` function are interned.
+In [codeobject.c](https://hg.python.org/releasing/2.7.9/file/753a8f457ddc/Objects/codeobject.c#l72){:target="_blank"}, the tuple `consts` contains the literals defined at compile time: booleans, floating-point numbers, integers, and strings declared in your program. The strings stored in this tuple and not filtered out by the `all_name_chars` function are interned.
 
 In the example below, `s1` is declared at compile time. Oppositely, `s2` is produced at runtime: 
 
