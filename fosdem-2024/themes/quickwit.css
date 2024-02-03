@@ -1,0 +1,172 @@
+@charset "UTF-8";
+
+/*!
+ * Marp Quickwit theme.
+ * @theme quickwit
+ * @author Quickwit
+ *
+ */
+
+@import 'default';
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('themes/fonts/soehne-web-buch-11921e26322677d1a24a2d3d78c8a039.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Sohne';
+  font-weight: bold;
+  src: url('themes/fonts/soehne-web-halbfett-d401b2c41ac4f7cdfc4e95909722e537.woff2') format('woff2');
+}
+
+* {
+  font-family: 'Sohne';
+}
+
+h2 {
+  font-weight: 300;
+  font-size: 1.2em;
+  line-height: 30px;
+}
+
+:root {
+  --quickwit-red: #ff0026;
+  --quickwit-black: #1f232a;
+  --quickit-green: #00d588;
+  --quickwit-blue: #004bd0;
+}
+
+.center {
+  display: block;
+  margin: 0 auto;
+}
+
+section {
+  position: relative;
+  padding: 50px;
+  background-color: white;
+}
+
+.columns-60-40 {
+  display: grid;
+  grid-template-columns: 60% 40%;
+  gap: 1rem;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 1rem;
+}
+
+section.deck-title {
+  background:
+    url('library/bg-random-white.png') 110% 50% no-repeat,
+    url('library/logo_horizontal_white.png') 50px 6% no-repeat;
+  background-color: var(--quickwit-red);
+  font-smooth: auto;
+}
+
+section.deck-title h1 {
+  color: white;
+  position: relative;
+  top: 26%;
+  bottom: 0x;
+  font-size: 2.6em;
+}
+
+section.deck-title h2 {
+  color: white;
+  position: relative;
+  top: 20%;
+  bottom: 0x;
+  width: 900px;
+  font-size: 1.2em;
+  font-weight: 400;
+}
+
+a {
+  color: var(--quickwit-red);
+}
+
+section.title {
+  background-color: white !important;
+  background:
+    url('library/bg-random-gray.png') 110% 50% no-repeat,
+    url('library/icon_red.png') 50px 6% no-repeat;
+  font-weight: 700;
+}
+
+section.title p {
+  margin-left: 400px;
+}
+
+section.title h1 {
+  font-size: 2.3em !important;
+  position: relative;
+  top: 25%;
+  bottom: 0x;
+  width: 800px;
+  font-size: 2.6em;
+}
+
+p.quote {
+  font-size: 50px;
+  font-family: 'Sohne Mono';
+  text-align: center;
+}
+
+section.normal {
+  background-color: white !important;
+  font-smooth: auto;
+  font-family: 'Sohne';
+  color: var(--quickwit-black);
+  background: url('library/icon_red.png') 98% 40px no-repeat;
+}
+
+section.team {
+  background-color: white !important;
+  font-smooth: auto;
+  font-family: 'Sohne';
+  color: var(--quickwit-black);
+  background:
+    url('library/icon_red.png') 50px 6% no-repeat;
+}
+
+section h1 {
+  color: var(--quickwit-black);
+}
+
+section.citation {
+  background-color: var(--quickwit-black);
+  color: white;
+}
+
+section.citation p {
+  padding: 30px 50px;
+  position: relative;
+  text-align: center;
+  margin: 0 auto;
+  /* padding: 1rem 1.2rem; */
+  /* width: 80%; */
+  font-size: 60px;
+  background-color: var(--quickwit-black);
+  color: white;
+  text-align: center;
+  quotes: "“" "”" "‘" "’";
+  font-family: "Crimson Text";
+}
+
+section.citation p {
+    background:
+    linear-gradient(to right, var(--quickwit-red) 8px, transparent 8px) 0 100%,
+    linear-gradient(to left, var(--quickwit-red) 8px, transparent 8px) 100% 0,
+    linear-gradient(to bottom, var(--quickwit-red) 8px, transparent 8px) 100% 0,
+    linear-gradient(to top, var(--quickwit-red) 8px, transparent 8px) 0 100%;
+    background-repeat: no-repeat;
+    background-size: 40px 40px;
+}
+
+small {
+  color: #969faf;
+}
