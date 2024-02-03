@@ -355,7 +355,6 @@ type BoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
 Pros:
 - easy
 - readable
-- flexible
 
 Cons:
 - allocation
@@ -840,10 +839,10 @@ where
     type Future = TimeoutFuture<S::Future>;
 
     fn call(&mut self, request: Request) -> Self::Future {
-        let response = self.inner.call(request);
-        let sleep = tokio::time::sleep(self.timeout);
+        let inner_future = self.inner.call(request);
+        let sleep_future = tokio::time::sleep(self.timeout);
 
-        TimeoutFuture::new(response, sleep)
+        TimeoutFuture::new(inner_future, sleep_future)
     }
 }
 ```
@@ -858,9 +857,9 @@ where
 
 ```rust
 #[pin_project]
-pub struct ResponseFuture<F> {
+pub struct TimeoutFuture<F> {
     #[pin]
-    response: F,
+    inner: F,
     #[pin]
     sleep: Sleep,
 }
@@ -871,7 +870,7 @@ pub struct ResponseFuture<F> {
 <!-- _class: normal -->
 
 ```rust
-impl<F, T, E> Future for ResponseFuture<F>
+impl<F, T, E> Future for TimeoutFuture<F>
 where
     F: Future<Output = Result<T, E>>,
     E: Into<crate::BoxError>,
@@ -881,13 +880,13 @@ where
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         let this = self.project();
 
-        // First, try polling the future
-        match this.response.poll(cx) {
+        // First, try polling the inner future.
+        match this.inner.poll(cx) {
             Poll::Ready(result) => return Poll::Ready(result.map_err(Into::into)),
             Poll::Pending => {}
         }
 
-        // Now check the sleep
+        // Then, check the sleep future.
         match this.sleep.poll(cx) {
             Poll::Pending => Poll::Pending,
             Poll::Ready(_) => Poll::Ready(Err(Elapsed(()).into())),
